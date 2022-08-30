@@ -1,81 +1,373 @@
-﻿Imports System.Linq
+﻿Imports System
+Imports System.Linq
+Imports System.Threading.Tasks
+Imports System.Drawing
+
 Public Class TestForm
+
+#Region " Declares "
     Public CellList As List(Of Cell) = New List(Of Cell)
 
     Dim rnd As New Random
 
+    Public task As Task = New Task(Sub() GhostUpdate())
 
     Public gridWidth As Integer = Me.SplitContainer.Panel1.Size.Width
     Dim gridHeight As Integer = Me.SplitContainer.Panel1.Size.Height
 
-    Public numOfCellsHor As Integer = 27
-    Dim numOfCellsVer As Integer = 20
+    Public numOfCellsHor As Short = 24
+    Dim numOfCellsVer As Short = 24
     Public cellSize As Double = gridWidth / numOfCellsHor
 
-    Dim cPlayer As Player
-    Dim cGhost1 As Ghost
+
+    Public cPlayer As Player
+    Public cGhost1 As Ghost
+
+    Private isDrawing As Boolean = False
+    Private Const inOpened As Integer = 1
+    Private Const inClosed As Integer = 2
+    Private Heap As New BinaryHeap()
+    Private Map(numOfCellsHor, numOfCellsVer) As CellData
+    Private StartX, StartY, EndX, EndY As Short
+    Private oBuff As New Bitmap(750, 750)
+    Private oBuffG As Graphics = Graphics.FromImage(oBuff)
+    Private PathFound, PathHunt As Boolean
+    Private ParentX, ParentY As Short
+#End Region
+
+    Public Structure Neighbours
+        Friend Top As Cell
+        Friend Bottom As Cell
+        Friend Left As Cell
+        Friend Right As Cell
+    End Structure
+
+#Region " Subs "
+    Function Shuffle(Of T)(collection As IEnumerable(Of T)) As List(Of T)
+        Dim r As Random = New Random()
+        Shuffle = collection.OrderBy(Function(a) r.Next()).ToList()
+    End Function
 
     Private Sub Reset()
         Application.Restart()
         Me.Refresh()
     End Sub
     Private Sub TestForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
         GenGrid()
 
-        Dim filledCells = CellList.FindAll(Function(p) p.IsPassable = True)
-        If Not filledCells.Count < 1 Then
-            Dim playerPos = filledCells(rnd.Next(0, filledCells.Count))
-            cPlayer = New Player(CInt(cellSize), playerPos.Location)
-            playerPos.Hide()
+        Dim maze = New MazeBuilder(numOfCellsHor, numOfCellsVer)
+        Dim d = maze.display(1)
+        'Dim filledCells = CellList.FindAll(Function(p) p.IsPassable = True)
+        'If Not filledCells.Count < 1 Then
+        '    Dim playerPos = filledCells(rnd.Next(0, filledCells.Count))
+        '    cPlayer = New Player(CInt(cellSize), playerPos.Location)
+        '    'Dim playerPos = New Point(CInt(2 * cellSize), CInt(1 * cellSize))
+        '    'cPlayer = New Player(CInt(cellSize), playerPos)
+        '    'playerPos.Hide()
 
 
-            Me.SplitContainer.Panel1.Controls.Add(cPlayer)
-            GenCoins()
+        '    Me.SplitContainer.Panel1.Controls.Add(cPlayer)
+        '    cPlayer.BringToFront()
 
-            Dim ghostPos = filledCells(rnd.Next(0, filledCells.Count))
-            ghostPos.Hide()
-            cGhost1 = New Ghost(CInt(cellSize), ghostPos.Location, CellList)
-            Me.SplitContainer.Panel1.Controls.Add(cGhost1)
-            'cGhost1.FindWayToPlayer(cPlayer, CellList)
-            AddHandler cGhost1.Click, AddressOf Move
+        '    'Intersection()
+        '    'GenCoins()
+
+        '    Dim ghostPos = filledCells(rnd.Next(0, filledCells.Count))
+        '    ghostPos.Hide()
+        '    cGhost1 = New Ghost(CInt(cellSize), ghostPos.Location, CellList)
+        '    Me.SplitContainer.Panel1.Controls.Add(cGhost1)
+        '    cGhost1.BringToFront()
+        '    'cGhost1.FindWayToPlayer(cPlayer, CellList)
+        '    AddHandler cGhost1.Click, AddressOf Move
+
+        '    task.Start()
+        'End If
+
+        'Dim walls = CellList.FindAll(Function(w) w.IsPassable = False)
+        'Dim wall = walls(rnd.Next(0, walls.Count))
+
+    End Sub
+
+
+
+
+    Private Sub TestForm_Paint(ByVal sender As Object, ByVal e As PaintEventArgs) Handles MyBase.Paint
+        Render()
+    End Sub
+
+    Private Sub PicGrid_MouseDown(ByVal sender As Object, ByVal e As MouseEventArgs) Handles cGridPictureBox.MouseDown
+        Dim cellSizeX = CShort(cGridPictureBox.Size.Width / numOfCellsHor)
+        Dim cellSizeY = CShort(cGridPictureBox.Size.Height / numOfCellsVer)
+
+        If e.Button <> MouseButtons.Left Then Exit Sub
+
+        Dim xPos As Short = CShort(e.X \ cellSizeX)
+        Dim yPos As Short = CShort(e.Y \ cellSizeY)
+        Debug.WriteLine($"{xPos} - {yPos}")
+
+        If cWallRadioButton.Checked Then
+            If Map(xPos, yPos).Wall = True Then
+                Map(xPos, yPos).Wall = False
+            Else
+                Map(xPos, yPos).Wall = True
+            End If
+        ElseIf cStartPosRadioButton.Checked Then
+            StartX = xPos
+            StartY = yPos
+        ElseIf cEndPosRadioButton.Checked Then
+            EndX = xPos
+            EndY = yPos
         End If
 
-        Dim walls = CellList.FindAll(Function(w) w.IsPassable = False)
-        Dim wall = walls(rnd.Next(0, walls.Count))
-
-        'While Not (cPlayer.Location = cGhost1.Location)
-        '    Threading.Thread.Sleep(500)
-        '    cPlayer.MoveWASD(cPlayer.CurrentDirection, CellList)
-
-        'End While
-        Me.BackColor = Color.Wheat
+        Render()
     End Sub
-    Private Sub TestForm_Shown(sender As Object, e As EventArgs) Handles Me.KeyDown
-        Debug.WriteLine("doublekligg")
+
+
+
+    Private Sub RunButton_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cRunButton.Click
+        Debug.WriteLine("Find Path")
+        FindPath()
+    End Sub
+    Private Sub ResetButton_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cClearButton.Click
+        Dim xCnt, yCnt As Integer
+
+        Heap.ResetHeap()
+
+        For yCnt = 0 To numOfCellsVer
+            For xCnt = 0 To numOfCellsHor
+                With Map(xCnt, yCnt)
+                    .DrawPath = False
+                    .FCost = 0
+                    .GCost = 0
+                    .HCost = 0
+                    .OCList = 0
+                    .ParentX = 0
+                    .ParentY = 0
+                    '.Wall = True
+                End With
+            Next
+        Next
+        Render()
+    End Sub
+
+    Private Sub Render()
+        Dim xCnt, yCnt As Int16
+        Dim cellSize As Int16 = CShort(cGridPictureBox.Size.Width / numOfCellsHor)
+
+        'Clear the background
+        oBuffG.Clear(Color.Black)
+
+        Dim icon = New Icon("C:\Users\arvid.wedtstein\Pictures\Memes\dennys2.ico")
+        Dim iconGhost = New Icon("C:\Users\arvid.wedtstein\Pictures\paggmann.ico")
+        oBuffG.DrawIcon(icon, StartX * cellSize, StartY * cellSize)
+        oBuffG.DrawIcon(iconGhost, EndX * cellSize, EndY * cellSize)
+
+
+        'Draw Walls
+        For yCnt = 0 To numOfCellsVer
+            For xCnt = 0 To numOfCellsHor
+                'If Map(xCnt, yCnt).Wall = True Then oBuffG.FillRectangle(New SolidBrush(ColorTranslator.FromHtml("#000066")), xCnt * cellSize, yCnt * cellSize, cellSize, cellSize)
+                If Map(xCnt, yCnt).Wall = True Then oBuffG.DrawRectangle(New Pen(ColorTranslator.FromHtml("#000066"), 6), xCnt * cellSize, yCnt * cellSize, cellSize, cellSize)
+
+                If Map(xCnt, yCnt).DrawPath = True Then
+                    oBuffG.FillEllipse(New SolidBrush(Color.White), xCnt * cellSize + CShort((cellSize / 2) / 2 - 1), yCnt * cellSize + CShort((cellSize / 2) / 2), CShort(cellSize / 2), CShort(cellSize / 2))
+                End If
+                If Map(xCnt, yCnt).Coin = True AndAlso Map(xCnt, yCnt).Wall = False Then
+                    'Dim coinIcon = New Icon("C:\Users\arvid.wedtstein\Pictures\paggmann.ico")
+                    'oBuffG.DrawIcon(coinIcon, StartX * cellSize, StartY * cellSize)
+                    oBuffG.FillEllipse(New SolidBrush(Color.Gold), xCnt * cellSize + CShort((cellSize / 2) / 2 - 1), yCnt * cellSize + CShort((cellSize / 2) / 2), CShort(cellSize / 2), CShort(cellSize / 2))
+                End If
+
+                ' combine fields that are together
+                'rows.Add(row)
+
+                'If row.Count > 1 Then
+                '    For i = 0 To row.Count - 1
+                '        Dim item = row(i)
+                '        If i + 1 <= row.Count - 1 AndAlso row(i + 1).First <= item.First + 1 Then
+                '            Debug.WriteLine($"{item.First} - {item.Last}")
+                '            If Map(row.First.First, row.First.Last).Wall = True Then oBuffG.DrawRectangle(New Pen(ColorTranslator.FromHtml("#ff0000"), 6), row.First.First * cellSize, row.First.Last * cellSize, cellSize * row.Last.First, row.Last.Last)
+                '        End If
+                '    Next
+                'End If
+            Next
+        Next
+
+        'Draw grid
+        'For xCnt = 0 To CShort(numOfCellsHor + 1)
+        '    oBuffG.DrawLine(New Pen(Color.White), xCnt * cellSize, 0, xCnt * cellSize, cGridPictureBox.Size.Width - 1)
+        '    oBuffG.DrawLine(New Pen(Color.White), 0, xCnt * cellSize, cGridPictureBox.Size.Height - 1, xCnt * cellSize)
+        'Next
+        cGridPictureBox.Image = CType(oBuff, Bitmap)
+    End Sub
+    Private Sub FindPath()
+        Dim xCnt, yCnt As Integer
+
+        If (StartX = EndX) And (StartY = EndY) Then Exit Sub
+
+        If Map(StartX, StartY).Wall Then Exit Sub
+        If Map(EndX, EndY).Wall Then Exit Sub
+
+        PathFound = False
+        PathHunt = True
+
+        Map(StartX, StartY).OCList = inOpened
+        Heap.Add(0, StartX, StartY)
+
+        While PathHunt
+            If Heap.Count <> 0 Then
+                ParentX = Heap.GetX
+                ParentY = Heap.GetY
+
+                Map(ParentX, ParentY).OCList = inClosed
+                Heap.RemoveRoot()
+
+                For yCnt = (ParentY - 1) To (ParentY + 1)
+                    For xCnt = (ParentX - 1) To (ParentX + 1)
+
+                        'Make sure we are not out of bounds
+                        If xCnt <> -1 And xCnt <> numOfCellsHor + 1 And yCnt <> -1 And yCnt < numOfCellsVer Then
+
+                            'Make sure its not on the closed list
+                            If Map(xCnt, yCnt).OCList <> inClosed Then
+
+                                'Make sure no wall
+                                If Map(xCnt, yCnt).Wall = False Then
+
+                                    'do not cut corners
+                                    Dim CanWalk As Boolean = True
+                                    If xCnt = ParentX - 1 Then
+                                        If yCnt = ParentY - 1 Then
+                                            'If Map(ParentX - 1, ParentY).Wall = True Or Map(ParentX, ParentY - 1).Wall = True Then CanWalk = False
+                                            CanWalk = False
+                                        ElseIf yCnt = ParentY + 1 Then
+                                            'If Map(ParentX, ParentY + 1).Wall = True Or Map(ParentX - 1, ParentY).Wall = True Then CanWalk = False
+                                            CanWalk = False
+                                        End If
+                                    ElseIf xCnt = ParentX + 1 Then
+                                        If yCnt = ParentY - 1 Then
+                                            'If Map(ParentX, ParentY - 1).Wall = True Or Map(ParentX + 1, ParentY).Wall = True Then CanWalk = False
+                                            CanWalk = False
+                                        ElseIf yCnt = ParentY + 1 Then
+                                            'If Map(ParentX + 1, ParentY).Wall = True Or Map(ParentX, ParentY + 1).Wall = True Then CanWalk = False
+                                            CanWalk = False
+                                        End If
+                                    End If
+
+                                    If CanWalk = True Then
+                                        If Map(xCnt, yCnt).OCList <> inOpened Then
+
+                                            'Calculate GCost
+                                            If Math.Abs(xCnt - ParentX) = 1 And Math.Abs(yCnt - ParentY) = 1 Then
+                                                Map(xCnt, yCnt).GCost = Map(ParentX, ParentY).GCost + CShort(14)
+                                            Else
+                                                Map(xCnt, yCnt).GCost = Map(ParentX, ParentY).GCost + CShort(10)
+                                            End If
+
+                                            'Calculate HCost
+                                            Map(xCnt, yCnt).HCost = CShort(10 * (Math.Abs(xCnt - EndX) + Math.Abs(yCnt - EndY)))
+                                            Map(xCnt, yCnt).FCost = CShort(Map(xCnt, yCnt).GCost + Map(xCnt, yCnt).HCost)
+
+                                            'Add the parent value
+                                            Map(xCnt, yCnt).ParentX = ParentX
+                                            Map(xCnt, yCnt).ParentY = ParentY
+
+                                            'Add the item to the heap
+                                            Heap.Add(Map(xCnt, yCnt).FCost, CShort(xCnt), CShort(yCnt))
+
+                                            'Add the item to the open list
+                                            Map(xCnt, yCnt).OCList = inOpened
+
+                                        Else
+
+                                            Dim AddedGCost As Integer
+                                            If Math.Abs(xCnt - ParentX) = 1 And Math.Abs(yCnt - ParentY) = 1 Then
+                                                AddedGCost = 14
+                                            Else
+                                                AddedGCost = 10
+                                            End If
+
+                                            Dim tempCost As Int16 = CShort(Map(ParentX, ParentY).GCost + AddedGCost)
+
+                                            If tempCost < Map(xCnt, yCnt).GCost Then
+                                                Map(xCnt, yCnt).GCost = tempCost
+                                                Map(xCnt, yCnt).ParentX = ParentX
+                                                Map(xCnt, yCnt).ParentY = ParentY
+                                                If Map(xCnt, yCnt).OCList = inOpened Then
+                                                    Dim NewCost As Integer = Map(xCnt, yCnt).HCost + Map(xCnt, yCnt).GCost
+                                                    Heap.Add(CShort(NewCost), CShort(xCnt), CShort(yCnt))
+                                                End If
+                                            End If
+                                        End If
+                                    End If
+                                End If
+                            End If
+                        End If
+                    Next
+                Next
+            Else
+                PathFound = False
+                PathHunt = False
+                Exit Sub
+            End If
+
+            If Map(EndX, EndY).OCList = inOpened Then
+                PathFound = True
+                PathHunt = False
+            End If
+        End While
+
+        If PathFound Then
+            Dim tX As Integer = EndX
+            Dim tY As Integer = EndY
+            Map(tX, tY).DrawPath = True
+            While True
+                Dim sX As Integer = Map(tX, tY).ParentX
+                Dim sY As Integer = Map(tX, tY).ParentY
+
+                Map(sX, sY).DrawPath = True
+                tX = sX
+                tY = sY
+
+                If tX = StartX And tY = StartY Then Exit While
+            End While
+
+            Render()
+        End If
+    End Sub
+
+
+
+
+    Public Sub GhostUpdate()
         cGhost1.FindWayToPlayer(cPlayer, CellList)
+    End Sub
+
+    Private Sub TestForm_Shown(sender As Object, e As EventArgs) Handles Me.KeyDown
+        'cGhost1.FindWayToPlayer(cPlayer, CellList)
+
     End Sub
 
     ''' <summary>
     ''' Generate grid for pacman
     ''' </summary>
     Private Sub GenGrid()
-        Dim i = 0
-        For y = 1 To numOfCellsVer
-            For x = 1 To numOfCellsHor
+        Me.SplitContainer.Panel1.SuspendLayout()
 
-                Dim cell = New Cell(CInt(cellSize), x - 1, y - 1, False)
+        'For y = 0 To numOfCellsVer
+        '    For x = 0 To numOfCellsHor
 
-                AddHandler cell.Click, AddressOf Move
-                Me.SplitContainer.Panel1.Controls.Add(cell)
-                CellList.Add(cell)
+        '        Dim cell = New Cell(CInt(cellSize), x, y, False)
 
-                i += 1
-            Next
+        '        AddHandler cell.Click, AddressOf Move
+        '        Me.SplitContainer.Panel1.Controls.Add(cell)
+        '        CellList.Add(cell)
+        '    Next
+        'Next
 
-        Next
         'PrimAlgorithm()
         GenerateFields()
+        Me.SplitContainer.Panel1.ResumeLayout(False)
     End Sub
 
     Private Sub GenCoins()
@@ -87,111 +379,100 @@ Public Class TestForm
         Next
     End Sub
     Public Function GetNeighbours(cell As Cell) As List(Of Cell)
-        Dim cells = CellList.FindAll(Function(p)
-                                         If p.Location.Y = cell.Location.Y Then
-                                             If p.Location.X = cell.Location.X + cell.Size.Width Then
-                                                 Return True
-                                             End If
-                                             If p.Location.X = cell.Location.X - cell.Size.Width Then
-                                                 Return True
-                                             End If
-                                         End If
-                                         If p.Location.X = cell.Location.X Then
-                                             If p.Location.Y = cell.Location.Y + cell.Size.Height Then
-                                                 Return True
-                                             End If
-                                             If p.Location.Y = cell.Location.Y - cell.Size.Height Then
-                                                 Return True
-                                             End If
-                                         End If
-                                     End Function)
+        Dim posatcellX, posatcellY As Integer
+        With GetPosOfCell(cell)
+            posatcellX = .Item1
+            posatcellY = .Item2
+        End With
+        Dim cells = CellList.FindAll(Function(p) p.Location = GetCellAtPos(posatcellX + 1, posatcellY).Location Or
+                                            p.Location = GetCellAtPos(posatcellX - 1, posatcellY).Location Or
+                                            p.Location = GetCellAtPos(posatcellX, posatcellY + 1).Location Or
+                                            p.Location = GetCellAtPos(posatcellX, posatcellY - 1).Location)
         Return cells
     End Function
 
+    Private Sub GenPerlinNoise()
+        Dim min As Double = Double.MaxValue
+        Dim max As Double = Double.MinValue
+
+        Dim ratio As Double = 1.5F
+
+        For x = 0 To numOfCellsHor
+            For y = 0 To numOfCellsVer
+
+                Dim p As Double = New PerlinNoise().Perlin2D(x * ratio, y * ratio)
+                If p < min Then min = p
+                If p > max Then max = p
+
+                If p > 0.47F Then
+                    Map(x, y).Wall = False
+                Else
+                    Map(x, y).Wall = True
+                    Map(x, y).Coin = True
+                End If
+
+            Next
+        Next
+    End Sub
+
+    ''' <summary>
+    ''' Pacman Maze rules
+    ''' 1. Paths are only 1 tile thick.
+    ''' 2. No sharp turns (i.e. intersections are separated by atleast 2 tiles).
+    ''' 3. There are 1 Or 2 tunnels.
+    ''' 4. No dead-ends.
+    ''' 5. Only I, L, T, or + wall shapes are allowed, including the occasional rectangular wall.
+    ''' 6. Any non-rectangular wall pieces must only be 2 tiles thick.
+    ''' </summary>
     Private Sub GenerateFields()
+        GenPerlinNoise()
         Dim amountRowsVer = rnd.Next(1, CInt(numOfCellsVer / 2))
-        Dim rowsWithLineVer = New List(Of List(Of Cell))
         Dim rowNumsY = New List(Of Integer)
 
-        'Debug.WriteLine($"Amount of rowsVer: {amountRowsVer}")
-        For i = 1 To amountRowsVer
+        For i = 0 To amountRowsVer
             Dim rowVerNr = rnd.Next(0, numOfCellsVer)
 
 
             If rowNumsY.Contains(rowVerNr) Then ' if row already exist, then reroll
                 rowVerNr = rnd.Next(0, numOfCellsVer)
-                If rowNumsY.Contains(rowVerNr) Then ' if row already exist, then reroll
-                    rowVerNr = rnd.Next(0, numOfCellsVer)
-                End If
             End If
-            'Debug.WriteLine($"RowNrY: {rowVerNr}")
 
-            Dim rowStartPos = rnd.Next(2, CInt(numOfCellsHor / 4))
-            'Debug.WriteLine($"Row{i} StartPosX: {rowStartPos}")
-            Dim row = CellList.GetRange(rowStartPos + (rowVerNr * numOfCellsHor), rnd.Next(rowStartPos, numOfCellsHor - rowStartPos))
+            Dim rowStartPos = rnd.Next(2, CInt(numOfCellsHor / 2))
+            Dim rowEndPos = rnd.Next(rowStartPos, numOfCellsHor)
 
-            For Each cell In row
-                cell.IsPassable = True
-                cell.BackColor = If(cell.IsPassable = True, Color.Black, Color.Purple)
+            For d = rowStartPos To rowEndPos
+                Map(rowVerNr, d).Wall = True
+                Map(rowVerNr, d).Coin = True
             Next
+
             rowNumsY.Add(rowVerNr)
-            rowsWithLineVer.Add(row)
         Next
 
+
+
         Dim amountRowsHor = rnd.Next(2, CInt(numOfCellsHor / 2))
-        Dim rowsWithLineHor = New List(Of List(Of Cell))
         Dim rowNumsX = New List(Of Integer)
 
-        'Debug.WriteLine($"Amount of rowsHor: {amountRowsHor}")
-        For i = 1 To amountRowsHor
-            Dim yMin = CellList.Find(Function(g) g.Location.Y = rowsWithLineVer.Find(Function(x) x.Min(Function(c) c.Location.Y) = x.Min(Function(c) c.Location.Y))(0).Location.Y).Location
-            Dim yMax = CellList.Find(Function(g) g.Location.Y = rowsWithLineVer.Find(Function(x) x.Max(Function(c) c.Location.Y) = x.Max(Function(c) c.Location.Y))(0).Location.Y).Location
-            'Dim yMinIndex = CellList.FindIndex(Function(g) g.Location = rowsWithLineVer.Find(Function(x) x.Min(Function(c) c.Location.Y) = x.Min(Function(c) c.Location.Y))(0).Location)
 
-
-            Dim rowvalY = New List(Of Point)
-            For Each rowline In rowsWithLineVer
-                rowvalY.Add(rowline.OrderBy(Function(a) a.Location.X).ToList().First().Location)
-            Next
-            Dim yMinIndex = CellList.FindIndex(Function(g) g.Location.Y = rowvalY.Min(Function(k) k.Y))
-            Dim xMaxIndex = CellList.FindIndex(Function(g) g.Location.Y = rowvalY.Max(Function(k) k.Y) And g.Location.X = CellList.Find(Function(k) k.Location.X = rowvalY.Min(Function(l) l.X)).Location.X)
-
-
-            'Debug.WriteLine($"highest hor row: {yMin}.{yMax} - {yMinIndex} - {xMaxIndex}")
-            Dim rowHorNr = rnd.Next(0, numOfCellsHor) ' number of row along the x axis
-
+        For i = 0 To amountRowsHor
+            Dim rowHorNr = rnd.Next(0, numOfCellsHor)
 
 
             If rowNumsX.Contains(rowHorNr) Then ' if row already exist, then reroll
                 rowHorNr = rnd.Next(0, numOfCellsHor)
-                If rowNumsX.Contains(rowHorNr) Then ' if row already exist, then reroll
-                    rowHorNr = rnd.Next(0, numOfCellsHor)
-                End If
             End If
 
-            'Debug.WriteLine($"RowNrX: {rowHorNr}")
-
-            'Dim rowStartPos = CellList.ElementAt(yMinIndex).Location.X
             Dim rowStartPos = rnd.Next(2, CInt(numOfCellsVer / 4))
-            Dim row = CellList.FindAll(Function(c) c.Location.X = CellList.ElementAt(rowStartPos + (rowHorNr * numOfCellsVer)).Location.X And c.Location.X <= CellList.ElementAt(rowHorNr).Location.X And (c.Location.Y >= CellList.ElementAt(yMinIndex).Location.Y) And c.Location.Y <= CellList.ElementAt(xMaxIndex).Location.Y)
-
-            For Each cell In row
-                cell.IsPassable = True
-                cell.BackColor = If(cell.IsPassable = True, Color.Black, Color.Purple)
+            Dim rowEndPos = rnd.Next(rowStartPos, numOfCellsVer)
+            For d = rowStartPos To rowEndPos
+                Map(d, rowHorNr).Wall = True
+                Map(d, rowHorNr).Coin = True
             Next
 
-            'CellList(yMinIndex).Text = "y"
-            'CellList(yMinIndex).ForeColor = Color.Firebrick
-            'CellList(xMaxIndex).Text = "y"
-            'CellList(xMaxIndex).ForeColor = Color.Firebrick
-
-
             rowNumsX.Add(rowHorNr)
-            rowsWithLineHor.Add(row)
-
-
         Next
 
+        Render()
     End Sub
     Private Sub PrimAlgorithm()
 
@@ -219,6 +500,30 @@ Public Class TestForm
         Next
 
     End Sub
+    Public Function GetCellAtPos(x As Integer, y As Integer) As Cell
+        If x > numOfCellsHor Then
+            x = numOfCellsHor
+        End If
+        If y > numOfCellsVer Then
+            x = numOfCellsVer
+        End If
+        If x < 0 Then
+            x = 0
+        End If
+        If y < 0 Then
+            y = 0
+        End If
+        If (y * numOfCellsHor) + x > CellList.Count Then
+            Return CellList(CellList.Count)
+        End If
+        Return CellList((y * numOfCellsHor) + x)
+    End Function
+
+    Public Function GetPosOfCell(cell As Cell) As Tuple(Of Integer, Integer)
+        Return Tuple.Create(CInt(CellList.FindAll(Function(b) b.Location.Y = cell.Location.Y).IndexOf(cell)), CInt(CellList.IndexOf(cell) / numOfCellsHor))
+    End Function
+
+#End Region
 
     Class Cell
         Inherits Button
@@ -243,6 +548,7 @@ Public Class TestForm
             AddHandler BackgroundWorker.RunWorkerCompleted, AddressOf bw_RunWorkerCompleted
 
         End Sub
+
         Public Sub Coin()
             If Me.HasCoin = True Then
                 Me.HasCoin = False
@@ -350,6 +656,7 @@ Public Class TestForm
         Public LastLocation As Point
         Public id As String
         Public int As Integer
+        Public IsChasing As Boolean = False
         Private GhostColors As List(Of Color) = New List(Of Color)({Color.Pink, Color.Turquoise, Color.Orange})
         Public BackgroundWorker As ComponentModel.BackgroundWorker = New ComponentModel.BackgroundWorker
         Public Sub New(cellSize As Integer, location As Point, cellList As List(Of Cell))
@@ -370,98 +677,138 @@ Public Class TestForm
             AddHandler BackgroundWorker.RunWorkerCompleted, AddressOf bw_RunWorkerCompleted
         End Sub
 
-        Public Sub CalculateStepsToPlayer(player As Player) ' TODO calculate actual doable steps
-            Dim testLocation As Point = Me.Location
-            Dim stepY As Integer = testLocation.Y.CompareTo(player.Location.Y)
-            Dim stepX As Integer = testLocation.X.CompareTo(player.Location.X)
-            Dim steps As Integer = 0
-
-            While Not stepY = 0
-                If stepY = 1 Then
-                    ' Ghost is under player on Y
-                    testLocation.Y = testLocation.Y - Me.Size.Height
-                ElseIf stepY = -1 Then
-                    ' Ghost is over player on Y
-                    testLocation.Y = testLocation.Y + Me.Size.Height
-                End If
-                stepY = testLocation.Y.CompareTo(player.Location.Y)
-                steps += 1
-            End While
-            While Not stepX = 0
-                If stepX = 1 Then
-                    ' Ghost is under player on Y
-                    testLocation.X = testLocation.X - Me.Size.Width
-                ElseIf stepX = -1 Then
-                    ' Ghost is over player on Y
-                    testLocation.X = testLocation.X + Me.Size.Width
-                End If
-                stepX = testLocation.X.CompareTo(player.Location.X)
-                steps += 1
-            End While
-            Debug.WriteLine($"Steps to player: {steps}")
-
-        End Sub
-
-        Public Sub FindWayToPlayer(player As Player, cellList As List(Of Cell))
-            Me.BringToFront()
+        Public Sub FindWayToPlayer(player As Player, ByRef cellList As List(Of Cell))
+            'Me.BringToFront()
+            Me.Invoke(Sub()
+                          Me.BringToFront()
+                      End Sub)
 
             Dim ghostCell = cellList.Find(Function(f) f.Location = Me.Location)
-            If int >= 50 Then
-                Return
-            End If
+            'If int >= 100 Then
+            '    Return
+            'End If
             Dim neighbourCells = GetNeighbours(ghostCell, player, cellList)
-            Dim pathToPlayerCells = New List(Of Cell)
 
-            ' Check for blindzones. 
+
             For Each cell In neighbourCells
-                If cell.IsPassable = True Then
-                    Me.Refresh()
-                    player.BringToFront()
-                    'Threading.Thread.Sleep(500)
-                    int += 1
-                    If cell.Location.Y.CompareTo(player.Location.Y) = 0 And cell.Location.X.CompareTo(player.Location.X) = 0 Then
-                        Me.ForeColor = Color.DodgerBlue
-                        Exit For
-                        Exit Sub
+
+                'Me.Refresh()
+                Me.Invoke(Sub()
+                              Me.Refresh()
+                          End Sub)
+                player.Invoke(Sub()
+                                  player.BringToFront()
+                              End Sub)
+                'player.BringToFront()
+                int += 1
+                If Me.Location.Y.CompareTo(player.Location.Y) = 0 And Me.Location.X.CompareTo(player.Location.X) = 0 Then
+                    Me.ForeColor = Color.DodgerBlue
+                    Debug.WriteLine("Player Found")
+                    TestForm.EndGame()
+                    Exit For
+                End If
+                Threading.Thread.Sleep(800)
+                If cell.Location.Y.CompareTo(player.Location.Y) = -1 And cell.IsPassable = True Then ' player is under ghost
+                    Dim newLoc = New Point(Me.Location.X, If(cell.Location.Y.CompareTo(player.Location.Y) = -1, Me.Location.Y + Me.Size.Height, Me.Location.Y - Me.Size.Height))
+                    If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
+                        'Me.Location = newLoc
+                        Me.Invoke(Sub()
+                                      Me.Location = newLoc
+                                  End Sub)
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderColor = Color.Gold
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderSize = 3
+                        FindWayToPlayer(player, cellList)
+                        Return
                     End If
-                    If cell.Location.Y.CompareTo(player.Location.Y) = -1 Then ' player is under ghost
-                        Dim newLoc = New Point(Me.Location.X, Me.Location.Y + Me.Size.Height)
-                        If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
-                            Me.Location = newLoc
-                            cell.FlatAppearance.BorderSize = 3
-                            cell.FlatAppearance.BorderColor = Color.Gold
-                            FindWayToPlayer(player, cellList)
-                            pathToPlayerCells.Add(cell)
-                        End If
+                ElseIf cell.Location.Y.CompareTo(player.Location.Y) = -1 And cell.IsPassable = False Then
+                    Dim newLoc = New Point(If(cell.Location.X.CompareTo(player.Location.X) = -1, Me.Location.X + Me.Size.Width, Me.Location.X - Me.Size.Width), Me.Location.Y)
+                    If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
+                        'Me.Location = newLoc
+                        Me.Invoke(Sub()
+                                      Me.Location = newLoc
+                                  End Sub)
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderColor = Color.Gold
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderSize = 3
+                        FindWayToPlayer(player, cellList)
+                        Return
+                    End If
+                End If
 
-                    ElseIf cell.Location.Y.CompareTo(player.Location.Y) = 1 Then ' player is over ghost
-                        Dim newLoc = New Point(Me.Location.X, Me.Location.Y - Me.Size.Height)
-                        If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
-                            Me.Location = newLoc
-                            cell.FlatAppearance.BorderSize = 3
-                            cell.FlatAppearance.BorderColor = Color.Gold
-                            FindWayToPlayer(player, cellList)
-                            pathToPlayerCells.Add(cell)
-                        End If
-                    ElseIf cell.Location.X.CompareTo(player.Location.X) = -1 Then ' player is right of ghost
-                        Dim newLoc = New Point(Me.Location.X + Me.Size.Width, Me.Location.Y)
-                        If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
-                            Me.Location = newLoc
-                            cell.FlatAppearance.BorderSize = 3
-                            cell.FlatAppearance.BorderColor = Color.Coral
-                            FindWayToPlayer(player, cellList)
-                            pathToPlayerCells.Add(cell)
-                        End If
+                If cell.Location.Y.CompareTo(player.Location.Y) = 1 And cell.IsPassable = True Then ' player is over ghost
+                    Dim newLoc = New Point(Me.Location.X, Me.Location.Y - Me.Size.Height)
+                    If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
+                        'Me.Location = newLoc
+                        Me.Invoke(Sub()
+                                      Me.Location = newLoc
+                                  End Sub)
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderColor = Color.Gold
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderSize = 3
+                        FindWayToPlayer(player, cellList)
+                        Return
+                    End If
+                ElseIf cell.Location.Y.CompareTo(player.Location.Y) = 1 And cell.IsPassable = False Then
+                    Dim newLoc = New Point(If(cell.Location.X.CompareTo(player.Location.X) = -1, Me.Location.X + Me.Size.Width, Me.Location.X - Me.Size.Width), Me.Location.Y)
+                    If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
+                        Me.Invoke(Sub()
+                                      Me.Location = newLoc
+                                  End Sub)
+                        'Me.Location = newLoc
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderColor = Color.Gold
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderSize = 3
+                        FindWayToPlayer(player, cellList)
+                        Return
+                    End If
+                End If
 
-                    ElseIf cell.Location.X.CompareTo(player.Location.X) = 1 Then ' player is left of ghost
-                        Dim newLoc = New Point(Me.Location.X - Me.Size.Width, Me.Location.Y)
-                        If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
-                            Me.Location = newLoc
-                            cell.FlatAppearance.BorderSize = 3
-                            cell.FlatAppearance.BorderColor = Color.Coral
-                            FindWayToPlayer(player, cellList)
-                            pathToPlayerCells.Add(cell)
-                        End If
+                If cell.Location.X.CompareTo(player.Location.X) = -1 And cell.IsPassable = True Then ' player is right of ghost
+                    Dim newLoc = New Point(Me.Location.X + Me.Size.Width, Me.Location.Y)
+                    If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
+                        'Me.Location = newLoc
+                        Me.Invoke(Sub()
+                                      Me.Location = newLoc
+                                  End Sub)
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderColor = Color.Gold
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderSize = 3
+                        FindWayToPlayer(player, cellList)
+                        Return
+                    End If
+                ElseIf cell.Location.X.CompareTo(player.Location.X) = -1 And cell.IsPassable = False Then
+                    Dim newLoc = New Point(Me.Location.X, If(cell.Location.Y.CompareTo(player.Location.Y) = -1, Me.Location.Y + Me.Size.Height, Me.Location.Y - Me.Size.Height))
+                    If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
+                        'Me.Location = newLoc
+                        Me.Invoke(Sub()
+                                      Me.Location = newLoc
+                                  End Sub)
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderColor = Color.Gold
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderSize = 3
+                        FindWayToPlayer(player, cellList)
+                        Return
+                    End If
+                End If
+
+                If cell.Location.X.CompareTo(player.Location.X) = 1 And cell.IsPassable = True Then ' player is left of ghost
+                    Dim newLoc = New Point(Me.Location.X - Me.Size.Width, Me.Location.Y)
+                    If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
+                        'Me.Location = newLoc
+                        Me.Invoke(Sub()
+                                      Me.Location = newLoc
+                                  End Sub)
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderColor = Color.Gold
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderSize = 3
+                        FindWayToPlayer(player, cellList)
+                        Return
+                    End If
+                ElseIf cell.Location.X.CompareTo(player.Location.X) = 1 And cell.IsPassable = False Then
+                    Dim newLoc = New Point(Me.Location.X, If(cell.Location.Y.CompareTo(player.Location.Y) = -1, Me.Location.Y + Me.Size.Height, Me.Location.Y - Me.Size.Height))
+                    If cellList.Find(Function(c) c.Location = newLoc And c.IsPassable = True) IsNot Nothing Then
+                        'Me.Location = newLoc
+                        Me.Invoke(Sub()
+                                      Me.Location = newLoc
+                                  End Sub)
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderColor = Color.Gold
+                        cellList.Find(Function(c) c.Location = newLoc).FlatAppearance.BorderSize = 3
+                        FindWayToPlayer(player, cellList)
+                        Return
                     End If
                 End If
             Next
@@ -486,15 +833,14 @@ Public Class TestForm
                                                  End If
                                              End If
                                          End Function)
-            Debug.WriteLine($"{ghostCell.Location.Y.CompareTo(cPlayer.Location.Y)}") ' -1 = ghost is over player 
-            'Dim cells2 = cellList.FindAll(Function(p) p.Location.)
             Return cells
         End Function
 
         Private Sub bw_DoWork(ByVal sender As Object, ByVal e As ComponentModel.DoWorkEventArgs)
             Dim worker As ComponentModel.BackgroundWorker = CType(sender, ComponentModel.BackgroundWorker)
 
-            Threading.Thread.Sleep(10 * 1000)
+            Threading.Thread.Sleep(500)
+            'Me.FindWayToPlayer(Me.Player, Me.CellList)
             Me.BackgroundWorker.ReportProgress(100)
         End Sub
         Private Sub bw_RunWorkerCompleted(ByVal sender As Object, ByVal e As ComponentModel.RunWorkerCompletedEventArgs)
@@ -516,27 +862,33 @@ Public Class TestForm
         'If allowedKeys.Contains(e.KeyCode) Then
         '    cPlayer.CurrentDirection = e.KeyCode
         'End If
-        cPlayer.CurrentDirection = e.KeyCode
-        cPlayer.MoveWASD(cPlayer.CurrentDirection, CellList)
+        If e.KeyCode = Keys.W Or e.KeyCode = Keys.A Or e.KeyCode = Keys.S Or e.KeyCode = Keys.D Then
+            cPlayer.CurrentDirection = e.KeyCode
+            cPlayer.MoveWASD(cPlayer.CurrentDirection, CellList)
 
-        cGhost1.BringToFront()
+            cGhost1.BringToFront()
 
-        If cGhost1.Location = cPlayer.Location Then
-            Dim result As DialogResult = MessageBox.Show("You died!\nYour wanna restart?", "Game Over 🤡", MessageBoxButtons.YesNo)
-            If result = DialogResult.Yes Then
-                Me.Reset()
-            ElseIf result = DialogResult.No Then
-                Application.Exit()
+            If cGhost1.Location = cPlayer.Location Then
+                EndGame()
             End If
-            Return
+            cGameCountLabel.Text = $"{If(cPlayer.Gold > 1, "Coins", "Coin")}: {cPlayer.Gold}"
         End If
-        cGameCountLabel.Text = $"Beer: {cPlayer.Gold}"
+
     End Sub
 
+    Public Sub EndGame()
+        Dim result As DialogResult = MessageBox.Show("You died!\nYour wanna restart?", "Game Over 🤡", MessageBoxButtons.YesNo)
+        If result = DialogResult.Yes Then
+            Me.Reset()
+        ElseIf result = DialogResult.No Then
+            Application.Exit()
+        End If
+        Return
+    End Sub
 
     Private Sub Move(sender As Object, e As EventArgs)
         If TypeOf sender Is Ghost Then
-            Dim result As DialogResult = MessageBox.Show("You died!\nYour wanna restart?", "Game Over 🤡", MessageBoxButtons.YesNo)
+            Dim result As DialogResult = MessageBox.Show("You died!\nYou wanna restart?", "Game Over 🤡", MessageBoxButtons.YesNo)
             If result = DialogResult.Yes Then
                 Me.Reset()
             ElseIf result = DialogResult.No Then
@@ -548,8 +900,11 @@ Public Class TestForm
             Dim btn As Cell = CType(sender, Cell)
             Debug.WriteLine($"{btn.Name} - {sender.GetType()}")
             cPlayer.Move(btn, CellList)
-            cGameCountLabel.Text = $"Beer: {cPlayer.Gold}"
+            cGameCountLabel.Text = $"{If(cPlayer.Gold > 1, "Coins", "Coin")}: {cPlayer.Gold}"
         End If
 
     End Sub
+
+
 End Class
+

@@ -35,6 +35,13 @@ Partial Class TestForm
         Me.AfGridLookupEditRepositoryItem1View = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.PacmanPlayerName = New Appframe3.Win.Controls.Utils.afGrid.afGridColumn()
         Me.AfGridColumn1 = New Appframe3.Win.Controls.Utils.afGrid.afGridColumn()
+        Me.cGridPictureBox = New System.Windows.Forms.PictureBox()
+        Me.cGridGroupBox = New System.Windows.Forms.GroupBox()
+        Me.cClearButton = New System.Windows.Forms.Button()
+        Me.cRunButton = New System.Windows.Forms.Button()
+        Me.cEndPosRadioButton = New System.Windows.Forms.RadioButton()
+        Me.cStartPosRadioButton = New System.Windows.Forms.RadioButton()
+        Me.cWallRadioButton = New System.Windows.Forms.RadioButton()
         CType(Me.SplitContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer.Panel1.SuspendLayout()
         Me.SplitContainer.SuspendLayout()
@@ -46,6 +53,8 @@ Partial Class TestForm
         CType(Me.PacmanDBDataSet, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.AfGridLookupEditRepositoryItem, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.AfGridLookupEditRepositoryItem1View, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cGridPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.cGridGroupBox.SuspendLayout()
         Me.SuspendLayout()
         '
         'SplitContainer
@@ -55,6 +64,7 @@ Partial Class TestForm
         'SplitContainer.Panel1
         '
         Me.SplitContainer.Panel1.BackColor = System.Drawing.Color.Black
+        Me.SplitContainer.Panel1.Controls.Add(Me.cGridPictureBox)
         Me.SplitContainer.Panel1.Controls.Add(Me.cGameCountLabel)
         Me.SplitContainer.Size = New System.Drawing.Size(1023, 779)
         Me.SplitContainer.SplitterDistance = 845
@@ -136,9 +146,9 @@ Partial Class TestForm
         Me.cGameCountLabel.ForeColor = System.Drawing.Color.White
         Me.cGameCountLabel.Location = New System.Drawing.Point(3, 3)
         Me.cGameCountLabel.Name = "cGameCountLabel"
-        Me.cGameCountLabel.Size = New System.Drawing.Size(42, 13)
+        Me.cGameCountLabel.Size = New System.Drawing.Size(46, 13)
         Me.cGameCountLabel.TabIndex = 2
-        Me.cGameCountLabel.Text = "Beer: 0"
+        Me.cGameCountLabel.Text = "Coins: 0"
         '
         'TileView1
         '
@@ -215,13 +225,97 @@ Partial Class TestForm
         Me.AfGridColumn1.Visible = True
         Me.AfGridColumn1.VisibleIndex = 0
         '
+        'cGridPictureBox
+        '
+        Me.cGridPictureBox.BackColor = System.Drawing.Color.DimGray
+        Me.cGridPictureBox.Location = New System.Drawing.Point(0, 0)
+        Me.cGridPictureBox.Name = "cGridPictureBox"
+        Me.cGridPictureBox.Size = New System.Drawing.Size(750, 750)
+        Me.cGridPictureBox.TabIndex = 3
+        Me.cGridPictureBox.TabStop = False
+        '
+        'cGridGroupBox
+        '
+        Me.cGridGroupBox.Controls.Add(Me.cClearButton)
+        Me.cGridGroupBox.Controls.Add(Me.cRunButton)
+        Me.cGridGroupBox.Controls.Add(Me.cEndPosRadioButton)
+        Me.cGridGroupBox.Controls.Add(Me.cStartPosRadioButton)
+        Me.cGridGroupBox.Controls.Add(Me.cWallRadioButton)
+        Me.cGridGroupBox.Location = New System.Drawing.Point(552, 12)
+        Me.cGridGroupBox.Name = "cGridGroupBox"
+        Me.cGridGroupBox.Size = New System.Drawing.Size(213, 118)
+        Me.cGridGroupBox.TabIndex = 8
+        Me.cGridGroupBox.TabStop = False
+        Me.cGridGroupBox.Text = "GroupBox1"
+        '
+        'cClearButton
+        '
+        Me.cClearButton.FlatAppearance.BorderColor = System.Drawing.Color.DarkBlue
+        Me.cClearButton.FlatAppearance.BorderSize = 3
+        Me.cClearButton.Location = New System.Drawing.Point(132, 77)
+        Me.cClearButton.Name = "cClearButton"
+        Me.cClearButton.Size = New System.Drawing.Size(75, 23)
+        Me.cClearButton.TabIndex = 4
+        Me.cClearButton.Text = "Clear"
+        Me.cClearButton.UseVisualStyleBackColor = True
+        '
+        'cRunButton
+        '
+        Me.cRunButton.Location = New System.Drawing.Point(132, 40)
+        Me.cRunButton.Name = "cRunButton"
+        Me.cRunButton.Size = New System.Drawing.Size(75, 23)
+        Me.cRunButton.TabIndex = 3
+        Me.cRunButton.Text = "Run"
+        Me.cRunButton.UseVisualStyleBackColor = True
+        '
+        'cEndPosRadioButton
+        '
+        Me.cEndPosRadioButton.AutoSize = True
+        Me.cEndPosRadioButton.Location = New System.Drawing.Point(47, 80)
+        Me.cEndPosRadioButton.Name = "cEndPosRadioButton"
+        Me.cEndPosRadioButton.Size = New System.Drawing.Size(60, 17)
+        Me.cEndPosRadioButton.TabIndex = 2
+        Me.cEndPosRadioButton.TabStop = True
+        Me.cEndPosRadioButton.Text = "EndPos"
+        Me.cEndPosRadioButton.UseVisualStyleBackColor = True
+        '
+        'cStartPosRadioButton
+        '
+        Me.cStartPosRadioButton.AutoSize = True
+        Me.cStartPosRadioButton.Location = New System.Drawing.Point(47, 57)
+        Me.cStartPosRadioButton.Name = "cStartPosRadioButton"
+        Me.cStartPosRadioButton.Size = New System.Drawing.Size(66, 17)
+        Me.cStartPosRadioButton.TabIndex = 1
+        Me.cStartPosRadioButton.TabStop = True
+        Me.cStartPosRadioButton.Text = "StartPos"
+        Me.cStartPosRadioButton.UseVisualStyleBackColor = True
+        '
+        'cWallRadioButton
+        '
+        Me.cWallRadioButton.AutoSize = True
+        Me.cWallRadioButton.Location = New System.Drawing.Point(47, 34)
+        Me.cWallRadioButton.Name = "cWallRadioButton"
+        Me.cWallRadioButton.Size = New System.Drawing.Size(45, 17)
+        Me.cWallRadioButton.TabIndex = 0
+        Me.cWallRadioButton.TabStop = True
+        Me.cWallRadioButton.Text = "Wall"
+        Me.cWallRadioButton.UseVisualStyleBackColor = True
+        '
         'TestForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1023, 856)
+        Me.Controls.Add(Me.cGridGroupBox)
         Me.Name = "TestForm"
         Me.Text = "TestForm"
+        Me.Controls.SetChildIndex(Me.barDockControlTop, 0)
+        Me.Controls.SetChildIndex(Me.barDockControlBottom, 0)
+        Me.Controls.SetChildIndex(Me.barDockControlRight, 0)
+        Me.Controls.SetChildIndex(Me.barDockControlLeft, 0)
+        Me.Controls.SetChildIndex(Me.DataNavigator, 0)
+        Me.Controls.SetChildIndex(Me.SplitContainer, 0)
+        Me.Controls.SetChildIndex(Me.cGridGroupBox, 0)
         Me.SplitContainer.Panel1.ResumeLayout(False)
         Me.SplitContainer.Panel1.PerformLayout()
         CType(Me.SplitContainer, System.ComponentModel.ISupportInitialize).EndInit()
@@ -234,6 +328,9 @@ Partial Class TestForm
         CType(Me.PacmanDBDataSet, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.AfGridLookupEditRepositoryItem, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.AfGridLookupEditRepositoryItem1View, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cGridPictureBox, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.cGridGroupBox.ResumeLayout(False)
+        Me.cGridGroupBox.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -248,4 +345,11 @@ Partial Class TestForm
     Friend WithEvents AfGridLookupEditRepositoryItem1View As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents PacmanPlayerName As Controls.Utils.afGrid.afGridColumn
     Friend WithEvents AfGridColumn1 As Controls.Utils.afGrid.afGridColumn
+    Friend WithEvents cGridPictureBox As PictureBox
+    Friend WithEvents cGridGroupBox As GroupBox
+    Friend WithEvents cClearButton As Button
+    Friend WithEvents cRunButton As Button
+    Friend WithEvents cEndPosRadioButton As RadioButton
+    Friend WithEvents cStartPosRadioButton As RadioButton
+    Friend WithEvents cWallRadioButton As RadioButton
 End Class
