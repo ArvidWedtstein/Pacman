@@ -136,7 +136,7 @@ Don't forget to give the project a star! <3
 
 No license. Do whatever you like :)
 
-<!-- MARKDOWN LINKS & IMAGES -->
+
 
 [contributors-shield]: https://img.shields.io/github/contributors/ArvidWedtstein/Pacman.svg?style=for-the-badge
 [contributors-url]: https://github.com/ArvidWedtstein/Pacman/graphs/contributors
