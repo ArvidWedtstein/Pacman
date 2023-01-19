@@ -1,0 +1,36 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+App.Test.arwe.4ddb4129-c085-4f1a-ab99-249711fa3094
+</name>
+</assembly>
+<members>
+<member name="T:App.Test.arwe.My.Resources.Resources">
+<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+<member name="P:App.Test.arwe.My.Resources.Resources.ResourceManager">
+<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member>
+<member name="P:App.Test.arwe.My.Resources.Resources.Culture">
+<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member>
+<member name="M:App.Test.arwe.TestForm.GenGrid">
+ <summary>
+ Generate grid for pacman
+ </summary>
+</member>
+<member name="T:App.Test.arwe.PacmanDBDataSet">
+<summary>
+Represents a strongly typed in-memory cache of data.
+</summary>
+</member>
+</members>
+</doc>

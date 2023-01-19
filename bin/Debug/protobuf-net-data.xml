@@ -1,0 +1,840 @@
+﻿<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>protobuf-net-data</name>
+    </assembly>
+    <members>
+        <member name="T:ProtoBuf.Data.DataSerializer">
+            <summary>
+            Provides protocol-buffer serialization for <see cref="T:System.Data.IDataReader"/>s.
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializer.Serialize(System.IO.Stream,System.Data.IDataReader)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/> who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializer.Serialize(System.IO.Stream,System.Data.IDataReader,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/> who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializer.Serialize(System.IO.Stream,System.Data.DataTable)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataTable"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataTable">The <see cref="T:System.Data.DataTable"/> who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializer.Serialize(System.IO.Stream,System.Data.DataTable,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataTable"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataTable">The <see cref="T:System.Data.DataTable"/> who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializer.Serialize(System.IO.Stream,System.Data.DataSet)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataSet"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/> who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializer.Serialize(System.IO.Stream,System.Data.DataSet,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataSet"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/> who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializer.Deserialize(System.IO.Stream)">
+            <summary>
+            Deserialize a protocol-buffer binary stream back into an <see cref="T:System.Data.IDataReader"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <returns>The <see cref="T:System.Data.IDataReader"/> being deserialized.</returns>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializer.DeserializeDataTable(System.IO.Stream)">
+            <summary>
+            Deserialize a protocol-buffer binary stream back into a <see cref="T:System.Data.DataTable"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <returns>The <see cref="T:System.Data.DataTable"/> being deserialized.</returns>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializer.DeserializeDataSet(System.IO.Stream,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Deserialize a protocol-buffer binary stream back into a <see cref="T:System.Data.DataSet"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <param name="tables">A sequence of strings, from which the <see cref="T:System.Data.DataSet"/> Load method retrieves table name information.</param>
+            <returns>The <see cref="T:System.Data.DataSet"/> being deserialized.</returns>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializer.DeserializeDataSet(System.IO.Stream,System.String[])">
+            <summary>
+            Deserialize a protocol-buffer binary stream as a <see cref="T:System.Data.DataSet"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <param name="tables">An array of strings, from which the <see cref="T:System.Data.DataSet"/> Load method retrieves table name information.</param>
+            <returns>The <see cref="T:System.Data.DataSet"/> being deserialized.</returns>
+        </member>
+        <member name="T:ProtoBuf.Data.DataSerializerEngine">
+            <summary>
+            Provides protocol-buffer serialization for <see cref="T:System.Data.IDataReader"/>s.
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializerEngine.Serialize(System.IO.Stream,System.Data.IDataReader)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/> who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializerEngine.Serialize(System.IO.Stream,System.Data.DataTable)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataTable"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataTable">The <see cref="T:System.Data.DataTable"/> who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializerEngine.Serialize(System.IO.Stream,System.Data.DataSet)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataSet"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/> who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializerEngine.Serialize(System.IO.Stream,System.Data.IDataReader,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/> who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializerEngine.Serialize(System.IO.Stream,System.Data.DataTable,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataTable"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataTable">The <see cref="T:System.Data.DataTable"/> who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializerEngine.Serialize(System.IO.Stream,System.Data.DataSet,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataSet"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/> who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializerEngine.Deserialize(System.IO.Stream)">
+            <summary>
+            Deserialize a protocol-buffer binary stream back into an <see cref="T:System.Data.IDataReader"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <returns>The <see cref="T:System.Data.IDataReader"/> being deserialized.</returns>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializerEngine.DeserializeDataTable(System.IO.Stream)">
+            <summary>
+            Deserialize a protocol-buffer binary stream back into a <see cref="T:System.Data.DataTable"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <returns>The <see cref="T:System.Data.DataTable"/> being deserialized.</returns>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializerEngine.DeserializeDataSet(System.IO.Stream,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Deserialize a protocol-buffer binary stream back into a <see cref="T:System.Data.DataSet"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <param name="tables">A sequence of strings, from which the <see cref="T:System.Data.DataSet"/> Load method retrieves table name information.</param>
+            <returns>The <see cref="T:System.Data.DataSet"/> being deserialized.</returns>
+        </member>
+        <member name="M:ProtoBuf.Data.DataSerializerEngine.DeserializeDataSet(System.IO.Stream,System.String[])">
+            <summary>
+            Deserialize a protocol-buffer binary stream as a <see cref="T:System.Data.DataSet"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <param name="tables">An array of strings, from which the <see cref="T:System.Data.DataSet"/> Load method retrieves table name information.</param>
+            <returns>The <see cref="T:System.Data.DataSet"/> being deserialized.</returns>
+        </member>
+        <member name="T:ProtoBuf.Data.IDataSerializerEngine">
+            <summary>
+            Provides protocol-buffer serialization for <see cref="T:System.Data.IDataReader"/>s.
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Data.IDataSerializerEngine.Serialize(System.IO.Stream,System.Data.IDataReader)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/> who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.IDataSerializerEngine.Serialize(System.IO.Stream,System.Data.DataTable)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataTable"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataTable">The <see cref="T:System.Data.DataTable"/> who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.IDataSerializerEngine.Serialize(System.IO.Stream,System.Data.DataSet)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataSet"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/> who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.IDataSerializerEngine.Serialize(System.IO.Stream,System.Data.IDataReader,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/> who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.IDataSerializerEngine.Serialize(System.IO.Stream,System.Data.DataTable,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataTable"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataTable">The <see cref="T:System.Data.DataTable"/> who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.IDataSerializerEngine.Serialize(System.IO.Stream,System.Data.DataSet,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize a <see cref="T:System.Data.DataSet"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/> who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.IDataSerializerEngine.Deserialize(System.IO.Stream)">
+            <summary>
+            Deserialize a protocol-buffer binary stream back into an <see cref="T:System.Data.IDataReader"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <returns>The <see cref="T:System.Data.IDataReader"/> being deserialized.</returns>
+        </member>
+        <member name="M:ProtoBuf.Data.IDataSerializerEngine.DeserializeDataTable(System.IO.Stream)">
+            <summary>
+            Deserialize a protocol-buffer binary stream back into a <see cref="T:System.Data.DataTable"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <returns>The <see cref="T:System.Data.DataTable"/> being deserialized.</returns>
+        </member>
+        <member name="M:ProtoBuf.Data.IDataSerializerEngine.DeserializeDataSet(System.IO.Stream,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Deserialize a protocol-buffer binary stream back into a <see cref="T:System.Data.DataSet"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <param name="tables">A sequence of strings, from which the <see cref="T:System.Data.DataSet"/> Load method retrieves table name information.</param>
+            <returns>The <see cref="T:System.Data.DataSet"/> being deserialized.</returns>
+        </member>
+        <member name="M:ProtoBuf.Data.IDataSerializerEngine.DeserializeDataSet(System.IO.Stream,System.String[])">
+            <summary>
+            Deserialize a protocol-buffer binary stream as a <see cref="T:System.Data.DataSet"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <param name="tables">An array of strings, from which the <see cref="T:System.Data.DataSet"/> Load method retrieves table name information.</param>
+            <returns>The <see cref="T:System.Data.DataSet"/> being deserialized.</returns>
+        </member>
+        <member name="T:ProtoBuf.Data.Internal.ExcludeFromCodeCoverageAttribute">
+            <summary>
+            Exclude a type or method from code coverage.
+            </summary>
+            <remarks>Using our own because the BCL one is only available in .NET
+            4.0 and higher.</remarks>
+        </member>
+        <member name="T:ProtoBuf.Data.IProtoDataWriter">
+            <summary>
+            Serializes an <see cref="T:System.Data.IDataReader"/> to a binary stream.
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Data.IProtoDataWriter.Serialize(System.IO.Stream,System.Data.IDataReader)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/>who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.IProtoDataWriter.Serialize(System.IO.Stream,System.Data.IDataReader,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/> who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+        </member>
+        <member name="T:ProtoBuf.Data.ProtoDataReader">
+            <summary>
+            Provides a way of reading a forward-only stream of data rows from a data source. This class cannot be inherited.
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ProtoBuf.Data.ProtoDataReader"/> class.
+            </summary>
+            <param name="stream">A <see cref="T:System.IO.Stream"/> that represents the stream the <see cref="T:ProtoBuf.Data.ProtoDataReader"/> reads from.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:ProtoBuf.Data.ProtoDataReader"/> class.
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataReader.FieldCount">
+            <summary>
+            Gets the number of columns in the current row.
+            </summary>
+            <returns>When not positioned in a valid recordset, 0; otherwise, the number of columns in the current record.</returns>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataReader.Depth">
+            <summary>
+            Gets a value that indicates the depth of nesting for the current row.
+            </summary>
+            <returns>The depth of nesting for the current row.</returns>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataReader.IsClosed">
+            <summary>
+            Gets a value indicating whether the specified <see cref="T:ProtoBuf.Data.ProtoDataReader"/> instance has been closed.
+            </summary>
+            <returns>true if the data reader is closed; otherwise, false.</returns>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataReader.RecordsAffected">
+            <summary>
+            Gets the number of rows changed, inserted, or deleted by execution of the SQL statement.
+            </summary>
+            <returns>The number of rows changed, inserted, or deleted; 0 if no rows were affected or the statement failed; and -1 for SELECT statements.</returns>
+            <remarks>The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> does not support <see cref="P:System.Data.IDataReader.RecordsAffected"/> and always returns zero.</remarks>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataReader.Item(System.Int32)">
+            <summary>
+            Gets the value of the specified column in its native format given the column ordinal.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The value of the specified column in its native format.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataReader.Item(System.String)">
+            <summary>
+            Gets the value of the specified column in its native format given the column name.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns>The value of the specified column in its native format.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">No column with the specified name was found.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetName(System.Int32)">
+            <summary>
+            Gets the name of the specified column.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The name of the specified column.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetDataTypeName(System.Int32)">
+            <summary>
+            Gets a string representing the data type of the specified column.
+            </summary>
+            <param name="i">The zero-based ordinal position of the column to find.</param>
+            <returns>The string representing the data type of the specified column.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetFieldType(System.Int32)">
+            <summary>
+            Gets the <see cref="T:System.Type"/> that is the data type of the object.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The <see cref="T:System.Type"/> that is the data type of the object. If the type does not exist on the client, in the case of a User-Defined Type (UDT) returned from the database, GetFieldType returns null.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetValue(System.Int32)">
+            <summary>
+            Return the value of the specified field.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The <see cref="T:System.Object"/> which will contain the field value upon return.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetValues(System.Object[])">
+            <summary>
+            Populates an array of objects with the column values of the current row.
+            </summary>
+            <param name="values">An array of <see cref="T:System.Object"/> into which to copy the attribute columns.</param>
+            <returns>The number of instances of <see cref="T:System.Object"/> in the array.</returns>
+            <exception cref="T:System.ArgumentNullException">values is null.</exception>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetOrdinal(System.String)">
+            <summary>
+            Gets the column ordinal, given the name of the column.
+            </summary>
+            <param name="name">The name of the column.</param>
+            <returns>The zero-based column ordinal.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">No column with the specified name was found.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetBoolean(System.Int32)">
+            <summary>
+            Gets the value of the specified column as a Boolean.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The value of the column.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetByte(System.Int32)">
+            <summary>
+            Gets the value of the specified column as a byte.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The value of the column.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetBytes(System.Int32,System.Int64,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads a stream of bytes from the specified column offset into the buffer an array starting at the given buffer offset.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <param name="fieldOffset">The index within the field from which to begin the read operation.</param>
+            <param name="buffer">The buffer into which to read the stream of bytes.</param>
+            <param name="bufferOffset">The index within the buffer where the write operation is to start.</param>
+            <param name="length">The maximum length to copy into the buffer.</param>
+            <returns>The actual number of bytes read.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetChar(System.Int32)">
+            <summary>
+            Gets the character value of the specified column.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The character value of the specified column.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetChars(System.Int32,System.Int64,System.Char[],System.Int32,System.Int32)">
+            <summary>
+            Reads a stream of characters from the specified column offset into the buffer as an array starting at the given buffer offset.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <param name="fieldOffset">The index within the field from which to begin the read operation.</param>
+            <param name="buffer">The buffer into which to read the stream of bytes.</param>
+            <param name="bufferOffset">The index within the buffer where the write operation is to start.</param>
+            <param name="length">The maximum length to copy into the buffer.</param>
+            <returns>The actual number of characters read.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetGuid(System.Int32)">
+            <summary>
+            Returns the GUID value of the specified field.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The GUID value of the specified field.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetInt16(System.Int32)">
+            <summary>
+            Gets the 16-bit signed integer value of the specified field.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The 16-bit signed integer value of the specified field.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetInt32(System.Int32)">
+            <summary>
+            Gets the 32-bit signed integer value of the specified field.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The 32-bit signed integer value of the specified field.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetInt64(System.Int32)">
+            <summary>
+            Gets the 64-bit signed integer value of the specified field.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The 64-bit signed integer value of the specified field.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetFloat(System.Int32)">
+            <summary>
+            Gets the single-precision floating point number of the specified field.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The single-precision floating point number of the specified field.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetDouble(System.Int32)">
+            <summary>
+            Gets the double-precision floating point number of the specified field.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The double-precision floating point number of the specified field.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetString(System.Int32)">
+            <summary>
+            Gets the string value of the specified field.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The string value of the specified field.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetDecimal(System.Int32)">
+            <summary>
+            Gets the fixed-position numeric value of the specified field.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The fixed-position numeric value of the specified field.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetDateTime(System.Int32)">
+            <summary>
+            Gets the date and time data value of the specified field.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The date and time data value of the specified field.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetTimeSpan(System.Int32)">
+            <summary>
+            Gets the time span value of the specified field.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>The time span value of the specified field.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+            <exception cref="T:System.InvalidCastException">The specified cast is not valid.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.System#Data#IDataRecord#GetData(System.Int32)">
+            <summary>
+            Returns an <see cref="T:System.Data.IDataReader"/> for the specified column ordinal.
+            </summary>
+            <param name="i">The index of the field to find.</param>
+            <returns>An <see cref="T:System.Data.IDataReader"/>.</returns>
+            <remarks>The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> does not support <see cref="M:System.Data.IDataRecord.GetData(System.Int32)"/> and always throws a <see cref="T:System.NotSupportedException"/>.</remarks>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.IsDBNull(System.Int32)">
+            <summary>
+            Return whether the specified field is set to null.
+            </summary>
+            <param name="i">The zero-based column ordinal.</param>
+            <returns>true if the specified field is set to null; otherwise, false.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">The index passed was outside the range of 0 through <see cref="P:System.Data.IDataRecord.FieldCount"/>.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.Close">
+            <summary>
+            Closes the <see cref="T:ProtoBuf.Data.ProtoDataReader"/> object.
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.NextResult">
+            <summary>
+            Advances the data reader to the next result.
+            </summary>
+            <returns>true if there are more result sets; otherwise false.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.GetSchemaTable">
+            <summary>
+            Returns a <see cref="T:System.Data.DataTable"/> that describes the column metadata of the <see cref="T:ProtoBuf.Data.ProtoDataReader"/>.
+            </summary>
+            <returns>A <see cref="T:System.Data.DataTable"/> that describes the column metadata.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.Read">
+            <summary>
+            Advances the <see cref="T:ProtoBuf.Data.ProtoDataReader"/> to the next record.
+            </summary>
+            <returns>true if there are more rows; otherwise false.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataReader.Dispose">
+            <summary>
+            Releases all resources used by the current instance of the <see cref="T:ProtoBuf.Data.ProtoDataReader"/> class.
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Data.ProtoDataStream">
+            <summary>
+            Serializes an <see cref="T:System.Data.IDataReader"/> to a binary stream
+            which can be read (it serializes additional rows with subsequent calls
+            to <see cref="M:ProtoBuf.Data.ProtoDataStream.Read(System.Byte[],System.Int32,System.Int32)"/>). Useful for scenarios like WCF where you cannot
+            write to the output stream directly.
+            </summary>
+            <remarks>Not guaranteed to be thread safe.</remarks>
+        </member>
+        <member name="F:ProtoBuf.Data.ProtoDataStream.DefaultBufferSize">
+            <summary>
+            Buffer size.
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.#ctor(System.Data.DataSet,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ProtoBuf.Data.ProtoDataStream"/> class.
+            </summary>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/>who's contents to serialize.</param>
+            <param name="bufferSize">Buffer size to use when serializing rows.
+            You should not need to change this unless you have exceptionally
+            large rows or an exceptionally high number of columns.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.#ctor(System.Data.DataSet,ProtoBuf.Data.ProtoDataWriterOptions,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ProtoBuf.Data.ProtoDataStream"/> class.
+            </summary>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/>who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+            <param name="bufferSize">Buffer size to use when serializing rows.
+            You should not need to change this unless you have exceptionally
+            large rows or an exceptionally high number of columns.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.#ctor(System.Data.DataTable,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ProtoBuf.Data.ProtoDataStream"/> class.
+            </summary>
+            <param name="dataTable">The <see cref="T:System.Data.DataTable"/>who's contents to serialize.</param>
+            <param name="bufferSize">Buffer size to use when serializing rows.
+            You should not need to change this unless you have exceptionally
+            large rows or an exceptionally high number of columns.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.#ctor(System.Data.DataTable,ProtoBuf.Data.ProtoDataWriterOptions,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ProtoBuf.Data.ProtoDataStream"/> class.
+            </summary>
+            <param name="dataTable">The <see cref="T:System.Data.DataTable"/>who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+            <param name="bufferSize">Buffer size to use when serializing rows.
+            You should not need to change this unless you have exceptionally
+            large rows or an exceptionally high number of columns.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.#ctor(System.Data.IDataReader,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ProtoBuf.Data.ProtoDataStream"/> class.
+            </summary>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/>who's contents to serialize.</param>
+            <param name="bufferSize">Buffer size to use when serializing rows.
+            You should not need to change this unless you have exceptionally
+            large rows or an exceptionally high number of columns.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.#ctor(System.Data.IDataReader,ProtoBuf.Data.ProtoDataWriterOptions,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ProtoBuf.Data.ProtoDataStream"/> class.
+            </summary>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/>who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+            <param name="bufferSize">Buffer size to use when serializing rows.
+            You should not need to change this unless you have exceptionally
+            large rows or an exceptionally high number of columns.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:ProtoBuf.Data.ProtoDataStream"/> class.
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataStream.CanRead">
+            <summary>
+            Gets a value indicating whether the <see cref="T:ProtoBuf.Data.ProtoDataStream"/> supports reading.
+            </summary>
+            <returns>true if data can be read from the stream; otherwise, false.</returns>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataStream.CanSeek">
+            <summary>
+            Gets a value indicating whether the stream supports writing. This property is not currently supported and always returns false.
+            </summary>
+            <returns>false in all cases to indicate that <see cref="T:ProtoBuf.Data.ProtoDataStream"/> cannot write to the stream.</returns>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataStream.CanWrite">
+            <summary>
+            Gets a value indicating whether the stream supports seeking. This property is not currently supported and always returns false.
+            </summary>
+            <returns>false in all cases to indicate that <see cref="T:ProtoBuf.Data.ProtoDataStream"/> cannot seek a specific location in the stream.</returns>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataStream.Length">
+            <summary>
+            Gets the length of the data available on the stream. This property is not currently supported and always throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <returns>The length of the data available on the stream.</returns>
+            <exception cref="T:System.NotSupportedException">Any use of this property.</exception>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataStream.Position">
+            <summary>
+            Gets or sets the current position in the stream. This set operation of this property is not currently supported and always throws a  <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <returns>The current position in the stream.</returns>
+            <exception cref="T:System.InvalidOperationException">The underlying <see cref="T:ProtoBuf.Data.ProtoDataReader"/> is closed.</exception>
+            <exception cref="T:System.NotSupportedException">Any use of the set operation of this property.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.Flush">
+            <summary>
+            Clears all buffers for this stream and causes any buffered data to be written to the underlying device.
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Sets the current position of the stream to the given value. This method is not currently supported and always throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <param name="offset">A byte offset relative to the origin parameter.</param>
+            <param name="origin">A value of type <see cref="T:System.IO.SeekOrigin"/> indicating the reference point used to obtain the new position.</param>
+            <returns>The new position within the current stream.</returns>
+            <exception cref="T:System.NotSupportedException">Any use of this method.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.SetLength(System.Int64)">
+            <summary>
+            Sets the length of the current stream. This method is not currently supported and always throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <param name="value">The desired length of the current stream in bytes.</param>
+            <exception cref="T:System.NotSupportedException">Any use of this method.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads data from the <see cref="T:ProtoBuf.Data.ProtoDataStream"/>.
+            </summary>
+            <param name="buffer">An array of type <see cref="T:System.Byte"/> that is the location in memory to store data read from the <see cref="T:ProtoBuf.Data.ProtoDataStream"/>.</param>
+            <param name="offset">The location in buffer to begin storing the data to.</param>
+            <param name="count">The number of bytes to read from the <see cref="T:ProtoBuf.Data.ProtoDataStream"/>.</param>
+            <returns>The number of bytes read from the <see cref="T:ProtoBuf.Data.ProtoDataStream"/>.</returns>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Writes data to the <see cref="T:ProtoBuf.Data.ProtoDataStream"/>. This method is not currently supported and always throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <param name="buffer">An array of type <see cref="T:System.Byte"/> that contains the data to write to the <see cref="T:ProtoBuf.Data.ProtoDataStream"/>.</param>
+            <param name="offset">The location in buffer from which to start writing data.</param>
+            <param name="count">The number of bytes to write to the <see cref="T:ProtoBuf.Data.ProtoDataStream"/>.</param>
+            <exception cref="T:System.NotSupportedException">Any use of this method.</exception>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataStream.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:ProtoBuf.Data.ProtoDataStream"/> and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="T:ProtoBuf.Data.ProtoDataWriter">
+            <summary>
+            Serializes an <see cref="T:System.Data.IDataReader"/> to a binary stream.
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataWriter.Serialize(System.IO.Stream,System.Data.DataSet)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/>who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataWriter.Serialize(System.IO.Stream,System.Data.DataSet,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataSet">The <see cref="T:System.Data.DataSet"/>who's contents to serialize.</param>
+            <param name="options">Writer options.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataWriter.Serialize(System.IO.Stream,System.Data.DataTable)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataTable">The <see cref="T:System.Data.DataTable"/>who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataWriter.Serialize(System.IO.Stream,System.Data.DataTable,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="dataTable">The <see cref="T:System.Data.DataTable"/>who's contents to serialize.</param>
+            <param name="options">Writer options.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataWriter.Serialize(System.IO.Stream,System.Data.IDataReader)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/>who's contents to serialize.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataWriter.Serialize(System.IO.Stream,System.Data.IDataReader,ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Serialize an <see cref="T:System.Data.IDataReader"/> to a binary stream using protocol-buffers.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="reader">The <see cref="T:System.Data.IDataReader"/>who's contents to serialize.</param>
+            <param name="options"><see cref="T:ProtoBuf.Data.ProtoDataWriterOptions"/> specifying any custom serialization options.</param>
+        </member>
+        <member name="T:ProtoBuf.Data.ProtoDataWriterOptions">
+            <summary>
+            Sets custom serialization options for the <see cref="T:ProtoBuf.Data.ProtoDataWriter"/>.
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataWriterOptions.SerializeEmptyArraysAsNull">
+            <summary>
+            Gets or sets a value indicating whether zero-length arrays were
+            serialized as null. In versions 2.0.4.480 and earlier, zero-length
+            arrays were serialized as null. After that, they are serialized
+            properly as a zero-length array. Set this flag if you need to write
+            to the old format. Default is false.
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Data.ProtoDataWriterOptions.IncludeComputedColumns">
+            <summary>
+            Gets or sets a value indicating whether computed columns are
+            ignored by default (columns who's values are determined by an
+            Expression rather than a stored value). Set to true to include
+            computed columns in serialization.
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataWriterOptions.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+            </summary>
+            <returns>true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.</returns>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataWriterOptions.Equals(ProtoBuf.Data.ProtoDataWriterOptions)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+            <returns>true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.</returns>
+            <param name="other">An object to compare with this object.</param>
+        </member>
+        <member name="M:ProtoBuf.Data.ProtoDataWriterOptions.GetHashCode">
+            <summary>
+            Serves as a hash function for a particular type.
+            </summary>
+            <returns>A hash code for the current <see cref="T:System.Object"/>.</returns>
+        </member>
+    </members>
+</doc>
