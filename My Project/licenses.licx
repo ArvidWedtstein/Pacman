@@ -1,0 +1,15 @@
+﻿DevExpress.XtraBars.BarManager, DevExpress.XtraBars.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraPivotGrid.PivotGridControl, DevExpress.XtraPivotGrid.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraWizard.WizardControl, DevExpress.XtraWizard.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraTreeMap.TreeMapControl, DevExpress.XtraTreeMap.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraGrid.GridControl, DevExpress.XtraGrid.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraScheduler.SchedulerControl, DevExpress.XtraScheduler.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraEditors.TileControl, DevExpress.XtraEditors.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraEditors.TextEdit, DevExpress.XtraEditors.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraNavBar.NavBarControl, DevExpress.XtraNavBar.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraBars.Navigation.OfficeNavigationBar, DevExpress.XtraBars.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraMap.MapControl, DevExpress.XtraMap.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraGauges.Win.GaugeControl, DevExpress.XtraGauges.v16.1.Win, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraTreeList.TreeList, DevExpress.XtraTreeList.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraBars.Ribbon.RibbonControl, DevExpress.XtraBars.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
+DevExpress.XtraEditors.Repository.RepositoryItemTextEdit, DevExpress.XtraEditors.v16.1, Version=16.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a
