@@ -1,6 +1,5 @@
 bin
 .vs/*
-obj
+.obj
 
 My Project
-.bin/*
