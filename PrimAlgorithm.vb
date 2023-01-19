@@ -61,7 +61,7 @@ Public Class PrimAlgorithm
             End If
             WallList.Remove(randCell)
         End While
-        'TestForm.cGridPictureBox.Image = CType(TestForm.oBuff, Bitmap)
+
     End Sub
 
     Private Function GetSurroundingCells(xPos As Int32, yPos As Int32) As Neighbours
