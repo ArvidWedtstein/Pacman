@@ -1,5 +1,6 @@
-# bin
-# .vs/*
-# obj
+bin
+.vs/*
+obj
 
-# My Project
+My Project
+.bin/*
